@@ -1,18 +1,17 @@
 "use strict";
-// server.js
-// where your node app starts
 
-// we've started you off with Express (https://expressjs.com/)
-// but feel free to use whatever libraries or frameworks you'd like through `package.json`.
 const express = require("express");
 const app = express();
 
 const dns = require("dns").promises;
 const https = require("https");
 const url = require("url");
+const fetch = require("node-fetch");
+
+const staticLookup = (ip, v) => (hostname, opts, cb) => cb(null, ip, v || 4)
+const staticDnsAgent = (scheme, ip) => new require(scheme).Agent({lookup: staticLookup(ip)})
 
 app.use(express.json());
-
 
 app.post("/dns", (req, res) => {
   dns
@@ -47,7 +46,6 @@ app.get("/", (request, response) => {
   response.sendFile(__dirname + "/views/index.html");
 });
 
-// listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
