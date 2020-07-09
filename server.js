@@ -16,7 +16,7 @@ app.use(express.json());
 
 app.post("/dns", (req, res) => {
   dns
-    .resolveAny(req.body.hostname)
+    .resolve(req.body.hostname)
     .then(
       results => res.send({ results: results }),
       failed => res.send({ error: failed })
@@ -31,7 +31,7 @@ app.post("/request", (req, res) => {
   fetch(
     url,
     {
-      timeout: 10000,
+      timeout: 5000,
       agent: agent
     },
     result => res.send(result)
