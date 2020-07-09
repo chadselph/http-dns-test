@@ -8,8 +8,9 @@ const https = require("https");
 const url = require("url");
 const fetch = require("node-fetch");
 
-const staticLookup = (ip, v) => (hostname, opts, cb) => cb(null, ip, v || 4)
-const staticDnsAgent = (scheme, ip) => new require(scheme).Agent({lookup: staticLookup(ip)})
+const staticLookup = (ip, v) => (hostname, opts, cb) => cb(null, ip, v || 4);
+const staticDnsAgent = (scheme, ip) =>
+  new require(scheme).Agent({ lookup: staticLookup(ip) });
 
 app.use(express.json());
 
@@ -26,15 +27,17 @@ app.post("/request", (req, res) => {
   const url = new URL(req.body.url);
   const ip = req.body.ip;
   const hostname = url.hostname;
-  url.hostname = ip;
-  https.get(
-    url.toString(),
+  const agent = staticDnsAgent(url.protocol, req.body.ip);
+  fetch(
+    url,
     {
-      headers: { host: hostname },
-      timeout: 5000
+      timeout: 5000,
+      agent: agent
     },
     result => res.send(result)
-  );
+  )
+    .then(r => r.text())
+    .finally(() => agent.destroy());
 });
 
 // make all the files in 'public' available
