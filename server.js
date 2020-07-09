@@ -27,16 +27,17 @@ app.post("/request", (req, res) => {
   const url = new URL(req.body.url);
   const ip = req.body.ip;
   const hostname = url.hostname;
-  const agent = staticDnsAgent(url.protocol, req.body.ip);
+  const agent = staticDnsAgent(url.protocol.slice(0, -1), req.body.ip);
   fetch(
     url,
     {
-      timeout: 5000,
+      timeout: 10000,
       agent: agent
     },
     result => res.send(result)
   )
-    .then(r => r.text())
+    .then(r => r.text().then(body => res.send({body: body, status: r.status()})))
+    .catch(e => res.send({ error: e.message }))
     .finally(() => agent.destroy());
 });
 
