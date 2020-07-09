@@ -36,7 +36,9 @@ app.post("/request", (req, res) => {
     },
     result => res.send(result)
   )
-    .then(r => r.text().then(body => res.send({body: body, status: r.status()})))
+    .then(r =>
+      r.text().then(body => res.send({ body: body, status: r.status }))
+    )
     .catch(e => res.send({ error: e.message }))
     .finally(() => agent.destroy());
 });

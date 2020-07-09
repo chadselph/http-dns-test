@@ -16,9 +16,19 @@ form.addEventListener("submit", event => {
           const newListItem = document.createElement("li");
           newListItem.innerText = entry.type + " " + entry.address;
           dnsEntryList.appendChild(newListItem);
+          const requestResult = document.createElement("p");
+          requestResult.innerHTML = '<div class="loader" />';
+          newListItem.appendChild(requestResult);
           apiCall("/request", {url: url, ip: entry.address})
+          .then(r => r.json())
+            .then(json => {
+            if (json.status) {
+                requestResult.innerText = json.status;
+            } else {
+              requestResult.innerText = json.error;
+            }
+          })
         });
-        console.log(response.results);
       } else if (response.error) {
         console.log(response.error);
       }
