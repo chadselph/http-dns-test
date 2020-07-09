@@ -1,6 +1,12 @@
 const dnsEntryList = document.getElementById("results");
 const form = document.querySelector("form");
 
+const urlParams = (new URL(document.location)).searchParams;
+
+if (urlParams.get("url")) {
+  form.elements.url.value = urlParams.get("url");
+}
+
 form.addEventListener("submit", event => {
   const url = form.elements.url.value
   event.preventDefault();
@@ -23,14 +29,14 @@ form.addEventListener("submit", event => {
           .then(r => r.json())
             .then(json => {
             if (json.status) {
-                requestResult.innerText = json.status;
+                requestResult.innerText = "Got " + json.status;
             } else {
               requestResult.innerText = json.error;
             }
           })
         });
       } else if (response.error) {
-        console.log(response.error);
+        dnsEntryList.innerText = JSON.stringify(response.error);
       }
     });
 });

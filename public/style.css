@@ -58,7 +58,7 @@ footer {
 .loader {
   border: 8px solid #f3f3f3;
   border-radius: 50%;
-  border-top: 16px solid #373fff;
+  border-top: 8px solid #373fff;
   width: 40px;
   height: 40px;
   -webkit-animation: spin 2s linear infinite; /* Safari */
